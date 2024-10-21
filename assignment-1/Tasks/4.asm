@@ -39,7 +39,7 @@ _start:
 calc_min_sale:
 	PUSH {R2-R4, LR}        // Store previous R2 to R4 values and Link Register in stack to not override to them
 	
-	LDR R2, [R0], #4        // Min value
+	LDR R2, [R1]            // Load global min value
 	
 _min:
 	LDR R3, [R0], #4        // Load day_n sales single value to R3 and apply post-index to R0 as R0 = R0 + #4
@@ -49,27 +49,16 @@ _min:
 							// If False, then take single stock value of day_n and compare with minimum 
 	
 	CMP R3, R2              // Compare new stock value with current minimum
-	BLS _substitute_1       // If it is less than or same, then branch to _substitute_1
+	BLS _substitute         // If it is less than or same, then branch to _substitute_1
 	
 	B _min                  // If not, then loop over until null terminator meet
 
-_substitute_1:
-	MOV R2, R3              // First type of substitute which focuses on assigning R3 to R2 and branch to _min
+_substitute:
+	MOV R2, R3              // Substitute which focuses on assigning R3 to R2 and branch to _min
 	
 	B _min                  // Branch back to _min
 
-_substitute_2:
-	MOV R2, R4              // Second type of substitute which focuses on assigning R4 to R2 and branch to _processing
-	
-	B _processing           // Branch back to _processing
-
 _stop:
-	LDR R4, [R1]            // Load R4 destination with the value of R1 register's memory address 
-	CMP R4, R2              // Compare global minimum with the current minimum
-	
-	BLS _substitute_2       // If condition holds (less than or same), then, branch to _substitute_2, otherwise continue
-	
-_processing:
 	STR R2, [R1]            // Store value (R2) in the memory address of R1
 
 	POP {R2-R4, LR}         // Load previous register values back to registers with Link Register

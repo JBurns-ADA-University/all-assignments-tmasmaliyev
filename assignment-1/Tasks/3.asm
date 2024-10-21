@@ -38,7 +38,7 @@ _start:
 calc_max_sale:
 	PUSH {R2-R4, LR}        // Store previous R2 to R4 values and Link Register in stack to not override to them
 	
-	MOV R2, #0              // Max value
+	MOV R2, [R1]            // Load global max value
 	
 _max:
 	LDR R3, [R0], #4        // Load day_n sales single value to R3 and apply post-index to R0 as R0 = R0 + #4
@@ -48,36 +48,19 @@ _max:
 							// If False, then take single stock value of day_n and compare with maximum 
 	
 	CMP R3, R2              // Compare new stock value with current maximum
-	BHI _substitute_1       // If it is greater, then branch to _substitute_1
+	BHI _substitute         // If it is greater, then branch to _substitute_1
 	
 	B _max                  // If not, then loop over until null terminator meet
 
-_substitute_1:
-	MOV R2, R3              // First type of substitute which focuses on assigning R3 to R2 and branch to _max
+_substitute:
+	MOV R2, R3              // Substitute which focuses on assigning R3 to R2 and branch to _max
 	
 	B _max                  // Branch back to _max
 
-_substitute_2:
-	MOV R2, R4              // Second type of substitute which focuses on assigning Rr to R2 and branch to _processing
-	
-	B _processing           // Branch back to _processing
-
 _stop:
-	LDR R4, [R1]            // Load R4 destination with the value of R1 register's memory address 
-	CMP R4, R2              // Compare global maximum with the current maximum
-	
-	BHI _substitute_2       // If condition holds (greater), then, branch to _substitute_2, otherwise continue
-	
-_processing:
 	STR R2, [R1]            // Store value (R2) in the memory address of R1
 
 	POP {R2-R4, LR}         // Load previous register values back to registers with Link Register
 					        // It means, we are done evaluating.
 	
 	BX LR                   // Branch back to original global function (_start)
-	
-	
-	
-	
-	
-	

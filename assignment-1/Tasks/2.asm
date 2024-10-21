@@ -47,7 +47,6 @@ calc_avg:
 	MOV R1, #0          // Running sum (Nominator)
 	MOV R2, #0          // Running counter (Denominator)
 	
-	MOV R3, #0          // Value of pointer to sales data as day_n
 	MOV R4, #0          // Value of unsigned division result
 	
 loop:

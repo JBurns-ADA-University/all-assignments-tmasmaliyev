@@ -15,7 +15,7 @@ total_sales: .word 0                              // Sum of n days of value stor
 
 _start:
 	LDR R0, =day_1                                // Load the address of day_1 into register
-	LDR R1, =total_sales                          // Load the address of total_sales into registers
+	LDR R1, =total_sales                          // Load the address of total_sales into register
 	 
 	BL sum_sales                                  // Branch Link to sum_sales for finding sum of values at day_1
 	
@@ -51,10 +51,10 @@ _sum:
 	B _sum                  // Loop over until null terminator meets
 	
 _stop:
-	LDR R4, [R0]            // Load R4 destination with the value of R0 register's memory address 
-	ADD R4, R4, R2          // Add runnin sum (R2) with R4 and store the value in R4
+	LDR R4, [R1]            // Load R4 destination with the value of R1 register's memory address 
+	ADD R4, R4, R2          // Add running sum (R2) with R4 and store the value in R4
 	
-	STR R4, [R0]            // Store value (R4) in the memory address of R0
+	STR R4, [R1]            // Store value (R4) in the memory address of R1
 
 	POP {R2-R4, LR}         // Load previous register values back to registers with Link Register
 					        // It means, we are done evaluating.
