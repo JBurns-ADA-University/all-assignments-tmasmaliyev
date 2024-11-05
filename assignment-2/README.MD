@@ -188,4 +188,22 @@ Disassembly of section .data:
 
 # Disassembly of High-Level Programming C
 
-arm-none-eabi-gcc -march=armv7-a -S count_iterations.c -o count_iterations.s
+Here, first `initial_R1 = 5` translates to `MOV R3, #5` and stores that at stack frame with offset such as `STR [FP, #16]`
+This is the same as `R0 = 20` .
+
+Then, branch call is executed. 
+
+In function call, the stack frame is pushed and values with offsets considering stack frame are loaded to registers.
+
+After that, stack variables are assigned, in this case , it is assigned to registers.
+
+Branch operation is called. Then `R2` value is incremented by 1 and `R1` value is incremented by `R3`.
+
+After that, `CMP R2, R3` is applied and check for `BLE`. If true, than branch that address or use `BX` to go to instruction in main stack.
+
+
+In order to verify, I used the linux disassembler. Here are the codes:
+- `arm-linux-gnueabi-gcc -o c_assembly c_assembly.c`
+- `arm-linux-gnueabi-objdump -d c_assembly > c_assembly.s` 
+
+The `c_assembly.s` file resides in the same directory.
