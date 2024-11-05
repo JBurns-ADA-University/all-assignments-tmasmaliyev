@@ -2,22 +2,22 @@
 
 1. Convert the following program from machine language into ARM assembly language
 
-0x00008008 0xE3A02000
-0x0000800C 0xE1A03001
-0x00008010 0xE1510000
-0x00008014 0x8A000002
-0x00008018 0xE2822001
-0x0000801C 0xE0811003
-0x00008020 0xEAFFFFFA
-0x00008024 0xE1A00002
+- 0x00008008 0xE3A02000
+- 0x0000800C 0xE1A03001
+- 0x00008010 0xE1510000
+- 0x00008014 0x8A000002
+- 0x00008018 0xE2822001
+- 0x0000801C 0xE0811003
+- 0x00008020 0xEAFFFFFA
+- 0x00008024 0xE1A00002
 
 # Problem Solving
 
 When PC starts from the first instruction, the instruction address is `0x00008008` and real instruction, `0xE3A02000`. When converting to **32** bits, it will look like this:
 
-1110 00 1 1101 0 0000 0010 000000000000
-|--| || | |--| | |--| |--| |----------|
-  1  2  3  4   5  6    7        8
+- 1110 00 1 1101 0 0000 0010 000000000000
+- |--| || | |--| | |--| |--| |----------|
+    1  2  3  4   5  6    7        8
 
 Here: 
 - First `4` bits are `condition` code which refers to `always execute`.
@@ -34,9 +34,9 @@ First instruction is `MOV R2, #0`
 
 In second insctruction : `0xE1A03001`
 
-1110 00 0 1101 0 0000 0011 000000000001
-|--| || | |--| | |--| |--| |----------|
-  1   2 3   4  5   6    7       8
+- 1110 00 0 1101 0 0000 0011 000000000001
+- |--| || | |--| | |--| |--| |----------|
+    1   2 3   4  5   6    7       8
 
 - First `4` bits are `condition` code which refers to always execute.
 - Second `2` bits are `op type` which refers to data processing
@@ -52,9 +52,9 @@ Second instruction is `MOV R3, R1`
 
 In third instruction: 0xE1510000
 
-1110 00 0 1010 1 0001 0000 000000000000
-|--| || | |--| | |--| |--| |----------|
-  1   2 3   4  5  6     7        8
+- 1110 00 0 1010 1 0001 0000 000000000000
+- |--| || | |--| | |--| |--| |----------|
+    1   2 3   4  5  6     7        8
 
 - First `4` bits are `condition` code which refers to always execute.
 - Second `2` bits are `op type` which refers to data processing
@@ -70,7 +70,7 @@ Third instruction is `CMP R1, R0`
 
 In fourth instruction: 0x8A000002
 
-10001010000000000000000000000010
+- 10001010000000000000000000000010
 
 (Since I couldn't find exact place meaning in this 32 bit code, I say resulting)
 This branches to `0xe1a00002` instruction if `Higher than` condition meets 
@@ -80,9 +80,9 @@ Fourth instruction is `BHI 0x1c`
 
 In fifth instruction : 0xE2822001
 
-1110 00 1 0100 0 0010 0010 000000000001
-|--| || | |--| | |--| |--| |----------|
-  1  2  3   4  5  6     7        8
+- 1110 00 1 0100 0 0010 0010 000000000001
+- |--| || | |--| | |--| |--| |----------|
+    1  2  3   4  5  6     7        8
 
 - First `4` bits are `condition` code which refers to always execute.
 - Second `2` bits are `op type` which refers to data processing
@@ -98,9 +98,9 @@ Fifth instruction is `ADD R2, R2, #1`
 
 In sixth instruction : 0xE0811003
 
-1110 00 0 0100 0 0001 0001 000000000011
-|--| || | |--| | |--| |--| |----------|
-  1  2  3   4  5   6    7       8
+- 1110 00 0 0100 0 0001 0001 000000000011
+- |--| || | |--| | |--| |--| |----------|
+    1  2  3   4  5   6    7       8
 
 - First `4` bits are `condition` code which refers to always execute.
 - Second `2` bits are `op type` which refers to data processing
@@ -116,7 +116,7 @@ Sixth instruction is `ADD R1, R1, R3`
 
 In seventh instruction : 0xEAFFFFFA
 
-11101010111111111111111111111010
+- 11101010111111111111111111111010
 
 (Since I couldn't find exact place meaning in this 32 bit code, I say resulting)
 All in all, this is unconditional branch that goes to `0xe1510000` place
@@ -126,9 +126,9 @@ Seventh instruction is `B 0x8`
 
 In Eigth instruction : 0xE1A00002
 
-1110 00 0 1101 0 0000 0000 000000000010
-|--| || | |--| | |--| |--| |----------|
-  1   2 3   4  5   6    7        8
+- 1110 00 0 1101 0 0000 0000 000000000010
+- |--| || | |--| | |--| |--| |----------|
+    1   2 3   4  5   6    7        8
 
 - First `4` bits are `condition` code which refers to always execute.
 - Second `2` bits are `op type` which refers to data processing
