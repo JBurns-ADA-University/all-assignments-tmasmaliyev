@@ -13,22 +13,22 @@ First, `Docker Image` is needed to run `armv7` version OS kernel. Then, `QEMU` (
 After initializing, it is safe to run `docker image` and store the inside data in `volume`. 
 
 Lines of codes:
-- sudo apt install qemu-user-static         (Install qemu to linux)
-- sudo apt install docker.io                (Install docker to linux)
+- `sudo apt install qemu-user-static`         (Install qemu to linux)
+- `sudo apt install docker.io`                (Install docker to linux)
 
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes  
+- `docker run --rm --privileged multiarch/qemu-user-static --reset -p yes`
 This code allows to change the architecture of docker container to`armv7` architecture using qemu
 
-- docker pull arm32v7/ubuntu
+- `docker pull arm32v7/ubuntu`
 This line pulls `armv7/ubuntu` versioned image from docker.hub, If it doesn't work, then run the following command directly, since it checks whether there is that `image` or not, so it can install
 
-sudo docker run -it --platform linux/arm/v7 --name my_arm_v7  arm32v7/ubuntu 
+- `sudo docker run -it --platform linux/arm/v7 --name my_arm_v7  arm32v7/ubuntu` 
 Run the docker image under the name of `my_arm_v7` container name.
 
 This is initializing process. After done your work, it is safer to use `exit` command.
 In order to use this container again, it is recommended to use start the container with `created name` such as:
 
-sudo docker start -ai my_arm_v7
+- `sudo docker start -ai my_arm_v7`
 
 Here is the environment. You can use `apt install update` to update softwares to latest version. You can check the cpu architecture by using `lscpu` command in terminal.
 
@@ -57,17 +57,17 @@ Also, it accepts, `C` language type function definition (Where the mangling is c
 In the `main` function, I added simple test case with corresponding length. Then passed it to `selection_sort`. It returns pointer that points to first element of array (basically sorted form). Then iterate to see if it is sorted or not.
 
 In order to `link` files correctly. This steps must be taken into account.
-- as -o selection_sort.o selection_sort.s
-- g++ -c -o main.o main.cpp
-- g++ -o main selection_sort.o main.o -z noexecstack
+- `as -o selection_sort.o selection_sort.s`
+- `g++ -c -o main.o main.cpp`
+- `g++ -o main selection_sort.o main.o -z noexecstack`
 
 First, **assembly code** is translated into `object` file (Machine code). Then, **C++** code is translated into `object` file too (but without linking).
 At last, the object files are linked to generate `executable` file (In this case, `main`). Also, the `-z noexecstack` is added so that generated `exe` doesn't execute code from stack. It is for security risk measures because in assembly, there is no measures taken into account, so adding it solves the warning of `GNU:noexecstack`
 
 In order to avoid writing every single time of these steps, I used `Makefile`. The makefile is just `template` for executing bunch of statements in one go. 
 I added to specific steps in the following:
-- make (Builds all files in one single line)
-- make clean (In order to clean object files and `exe`)
+- `make` (Builds all files in one single line)
+- `make clean` (In order to clean object files and `exe`)
 
 ## Algorithmic approach (Assembly file)
 Assembly function (the implementation of algorithm) resides in `selection_sort.s`. Here, let's go step-by-step:
@@ -127,3 +127,94 @@ Then, increment i by 1 then branch to `outer_loop`.
 This loop will go until i >= array length. Then, it will go to end_selection_sort. 
 For the return statement, in armv7, it is considered as R0 register. Assigning base pointer to R0 for return purposes.
 Here, the registers are stored and program counter set to link register to go back to caller function. 
+
+
+# Problem 1 (Section B)
+## Algorithm (Binary Search)
+
+`Pseudocode:`
+BinarySearch(A[0..n-1], K)
+// Implements nonrecursive binary search
+// Input: An array A[0..n-1] sorted in ascending order and a search key K
+// Output: An index of the array's element that is equal to K
+           or -1 if there is no such element
+l <- 0; r <- n - 1
+while l <= r do
+    m <- floor((l + r) / 2) 
+    if K = A[m] return m
+    else if K < A[m] r <- m - 1
+    else l <- m + 1
+return -1
+
+
+## Architectural approach
+At first, I divided my code in two parts :
+- C++
+- Assembly
+
+The raw `binary_search` was written assembly and in order to pass argument and get back the result, I used `C++`.
+At first, In `Problem_B` directory, `main.cpp` is created. To call assembly function, I added `externable` function keyword before function name.
+Basically this allows the `linker` to search that object file and fill the `implementation` based on that object file.
+Also, it accepts, `C` language type function definition (Where the mangling is closed and typical <type> <argument> notation format)
+
+In the `main` function, I added simple test case with corresponding length. Then passed it to `binary_search`. It returns pointer that points t>
+
+In order to `link` files correctly. This steps must be taken into account.
+- `as -o binary_search.o binary_search.s`
+- `g++ -c -o main.o main.cpp`
+- `g++ -o main binary_search.o main.o -z noexecstack`
+
+First, **assembly code** is translated into `object` file (Machine code). Then, **C++** code is translated into `object` file too (but without l>
+At last, the object files are linked to generate `executable` file (In this case, `main`). Also, the `-z noexecstack` is added so that generated>
+
+In order to avoid writing every single time of these steps, I used `Makefile`. The makefile is just `template` for executing bunch of statements>
+I added to specific steps in the following:
+- `make` (Builds all files in one single line)
+- `make clean` (In order to clean object files and `exe`)
+
+# Algorithmic approach (Assembly file)
+Assembly function (the implementation of algorithm) resides in `binary_search.s`. Here, let's go step-by-step:
+First, `global function` (main) is chosen. Then, it is type are given as `function`. This is because, in linking process, it should recognize th>
+
+In `binary_seach` branch, at first, The `registers` and `Link Register` is stored in stack (via push). This is done because when the caller ca>
+These registers are `R4-R7`. General purpose registers are also stored through `R8-R11`.
+
+The link register also stored, so at the end of the program, we will use to go back to `C++` code by assigning `PC = LR`.
+
+When arguments passed through assembly file, it stores it from `R0-R3'. If we have more arguments, then rest of them are stored in stack.
+In this case, there is only two arguments, so it is safe to only work with R0 and R1.
+
+R4 = base pointer to the array (R0)
+R5 = length of array (R1)
+R6 = R2  (Searched element in array)
+
+R7 = 0 (left bound, l = 0 case)
+R8 = R5 - 1 (right bound, r = n - 1)
+
+
+Then, branch to `inner_loop`. If l <= r case breaks, it goes to finalize_search_empty.
+R9 -> middle element (first, R9 = R7 + R8, basically, l + r)
+Then LSR (logical shift right to 1 bit, to get R9 = R9 / 2)
+
+Assign R10 to first base pointer then move 4 * middle_elemnt_index to get R10 = array[mid]
+
+then load that to R11 = &R10.
+
+Check for `conditions` in the following: (The below statements are after CMP R11, R6, I am just writing short description)
+- If R11 == R6 (meaning array[mid] == K), then branch to `finalize_search` because the element is found.
+- If R11 < R6 (meaning array[mid] < K), then branch to `is_in_right_side`)
+- If R11 > R6 (meaning array[mid] > K), then branch to `is_in_left_side`.
+
+In `finalize_search`, it found the element, so it sets `R0` register with the index of `mid`. Then branch to `end_of_binary_search`.
+
+In `is_in_right_branch`, it increments mid by 1, then assigns to l:
+- `l = mid + 1`
+
+In `is_in_left_branch`, it decrements mid by 1, then assigns to r:
+- `r = mid - 1`
+
+After that, it branches to `inner_loop`. This loop will continue until `l > r` meet
+It then goes to `finalize_search_empty` if `l > r` met. This means that the value is not in array, so it is safe to return `-1`.
+
+So, to return -1, the `negation` of 0 is assigned to `R0` register then branch to `end_of_binary_search`.
+Here, it restores register values and assign `PC = LR` to go back to caller function
