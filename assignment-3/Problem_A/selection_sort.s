@@ -60,4 +60,6 @@ update_array_value:
 	B outer_loop               @ Back to first loop statement
 
 end_selection_sort:
+	MOV R0, R4                 @ In armv7 assembly, the return format is stored in R0 register, 
+			           @ in this case, the output must be array (pointer to array's first element)
 	POP {R4-R7, R8-R12, PC}    @ Restore registers and return
