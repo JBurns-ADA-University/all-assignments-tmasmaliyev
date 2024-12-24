@@ -39,9 +39,9 @@ Also, you can test my files in that linux container by installing `build-essenti
 
 `Pseudocode:`
 SelectionSort(A[0..n-1])
-// Sorts a given array by selection sort
-// Input: An array A[0..n-1] of orderable elements
-// Output: Array[0..n-1] of orderable elements
+* // Sorts a given array by selection sort
+* // Input: An array A[0..n-1] of orderable elements
+* // Output: Array[0..n-1] of orderable elements
 
 
 ## Architectural approach
